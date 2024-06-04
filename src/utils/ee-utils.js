@@ -3,7 +3,7 @@ import area from "@turf/area";
 import { mapLimit } from "async";
 
 const VALUE_LIMIT = 5000;
-const REQUEST_LIMIT = 3;
+const REQUEST_LIMIT = 5;
 
 // Returns the linear scale in meters of the units of this projection
 export const getScale = (image) => image.select(0).projection().nominalScale();
