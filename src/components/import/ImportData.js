@@ -17,7 +17,7 @@ const dataImportMutation = {
 };
 
 const IMPORT_LIMIT = 500;
-const IMPORT_REQUEST_LIMIT = 3;
+const IMPORT_REQUEST_LIMIT = 5;
 
 const ImportData = ({ data, dataElement, features }) => {
   const { show: showErrorAlert } = useAlert(({ message }) => message, {
