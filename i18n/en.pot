@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-06-04T13:02:59.657Z\n"
-"PO-Revision-Date: 2024-06-04T13:02:59.657Z\n"
+"POT-Creation-Date: 2024-06-04T13:11:56.528Z\n"
+"PO-Revision-Date: 2024-06-04T13:11:56.528Z\n"
 
 msgid "About this app"
 msgstr "About this app"
@@ -594,6 +594,9 @@ msgstr "Loading org units"
 
 msgid "No org units with geometry found for this level"
 msgstr "No org units with geometry found for this level"
+
+msgid "An error occurred while importing data. Please try again."
+msgstr "An error occurred while importing data. Please try again."
 
 msgid "Importing data... {{progress}}%"
 msgstr "Importing data... {{progress}}%"

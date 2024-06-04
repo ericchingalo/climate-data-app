@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import i18n from "@dhis2/d2-i18n";
-import { useDataMutation } from "@dhis2/app-runtime";
+import { useDataMutation, useAlert } from "@dhis2/app-runtime";
 import { useState, useEffect } from "react";
 import { mapLimit } from "async";
 import { chunk, filter, reduce } from "lodash";
@@ -20,6 +20,10 @@ const IMPORT_LIMIT = 500;
 const IMPORT_REQUEST_LIMIT = 3;
 
 const ImportData = ({ data, dataElement, features }) => {
+  const { show: showErrorAlert } = useAlert(({ message }) => message, {
+    duration: 3000,
+    critical: true,
+  });
   const [response, setResponse] = useState(null);
   const [importing, setImporting] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -92,8 +96,14 @@ const ImportData = ({ data, dataElement, features }) => {
         setImporting(false);
       })
       .catch((e) => {
+        console.error(e);
         setResponse(null);
         setImporting(false);
+        showErrorAlert({
+          message: i18n.t(
+            "An error occurred while importing data. Please try again.",
+          ),
+        });
       });
   }, [mutate, data, dataElement]);
   return (
