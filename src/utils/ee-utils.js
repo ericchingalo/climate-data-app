@@ -1,7 +1,10 @@
 import i18n from "@dhis2/d2-i18n";
 import area from "@turf/area";
 
+import { mapLimit } from "async";
+
 const VALUE_LIMIT = 5000;
+const REQUEST_LIMIT = 3;
 
 // Returns the linear scale in meters of the units of this projection
 export const getScale = (image) => image.select(0).projection().nominalScale();
@@ -15,7 +18,7 @@ export const getInfo = (instance) =>
       } else {
         resolve(data);
       }
-    })
+    }),
   );
 
 // Reduce a feature collection to array of objects with id and properties
@@ -81,7 +84,9 @@ export const getEarthEngineValues = (ee, datasetParams, period, features) =>
       const scale = await getInfo(eeScale);
 
       const minArea = Math.min(
-        ...features.filter((f) => f.geometry.type.includes("Polygon")).map(area)
+        ...features
+          .filter((f) => f.geometry.type.includes("Polygon"))
+          .map(area),
       );
 
       if (minArea < scale * scale) {
@@ -113,7 +118,7 @@ export const getEarthEngineValues = (ee, datasetParams, period, features) =>
             .set("system:index", startUTC.format("YYYYMMdd"))
             .set("system:time_start", start.millis())
             .set("system:time_end", end.millis());
-        })
+        }),
       ).filter(ee.Filter.listContains("system:band_names", band)); // Remove empty images
     }
 
@@ -130,8 +135,8 @@ export const getEarthEngineValues = (ee, datasetParams, period, features) =>
               ou: feature.get("id"),
               period: image.date().format("YYYYMMdd"),
               value: feature.get(reducer),
-            })
-          )
+            }),
+          ),
       )
       .flatten();
 
@@ -146,10 +151,11 @@ export const getEarthEngineValues = (ee, datasetParams, period, features) =>
     } else {
       const chunks = Math.ceil(valueCount / VALUE_LIMIT);
 
-      Promise.all(
-        Array.from({ length: chunks }, (_, chunk) =>
-          getInfo(valueCollection.toList(VALUE_LIMIT, chunk * VALUE_LIMIT))
-        )
+      mapLimit(
+        Array.from({ length: chunks }, (_, chunk) => chunk),
+        REQUEST_LIMIT,
+        async (chunk) =>
+          getInfo(valueCollection.toList(VALUE_LIMIT, chunk * VALUE_LIMIT)),
       )
         .then((data) => [].concat(...data))
         .then(dataParser)
@@ -161,16 +167,8 @@ export const getEarthEngineData = (ee, datasetParams, period, features) => {
   if (datasetParams.bands) {
     // Multiple bands (used for relative humidity)
     const { bandsParser = (v) => v } = datasetParams;
-
-    return Promise.all(
-      datasetParams.bands.map((band) =>
-        getEarthEngineValues(
-          ee,
-          { ...datasetParams, ...band },
-          period,
-          features
-        )
-      )
+    return mapLimit(datasetParams.bands, REQUEST_LIMIT, async (band) =>
+      getEarthEngineValues(ee, { ...datasetParams, ...band }, period, features),
     ).then(bandsParser);
   } else {
     return getEarthEngineValues(ee, datasetParams, period, features);
@@ -222,7 +220,7 @@ export const getTimeSeriesData = async (ee, dataset, period, geometry) => {
               outputPrefix: sharedInputs ? "" : String(i),
               sharedInputs,
             }),
-      ee.Reducer
+      ee.Reducer,
     );
 
     if (!sharedInputs && Array.isArray(band)) {
@@ -238,8 +236,8 @@ export const getTimeSeriesData = async (ee, dataset, period, geometry) => {
   return getInfo(
     ee.FeatureCollection(
       collection.map((image) =>
-        ee.Feature(null, image.reduceRegion(eeReducer, eeGeometry, eeScale))
-      )
-    )
+        ee.Feature(null, image.reduceRegion(eeReducer, eeGeometry, eeScale)),
+      ),
+    ),
   ).then(getFeatureCollectionPropertiesArray);
 };
