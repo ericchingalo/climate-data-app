@@ -11,12 +11,16 @@
     "deploy": "d2-app-scripts deploy"
   },
   "devDependencies": {
-    "@dhis2/cli-app-scripts": "11.1.0"
+    "@dhis2/cli-app-scripts": "11.1.0",
+    "cross-var": "^1.1.0",
+    "dotenv-cli": "^7.4.2"
   },
   "dependencies": {
     "@dhis2/app-runtime": "^3.10.4",
     "@turf/area": "^6.5.0",
+    "async": "^3.2.5",
     "highcharts": "^10.3.3",
+    "lodash": "^4.17.21",
     "react-router-dom": "^6.21.3"
   }
 }
