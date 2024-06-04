@@ -1,6 +1,5 @@
 import i18n from "@dhis2/d2-i18n";
 import area from "@turf/area";
-
 import { mapLimit } from "async";
 
 const VALUE_LIMIT = 5000;
