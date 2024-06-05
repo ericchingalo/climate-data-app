@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "build": "d2-app-scripts build",
-    "start": "dotenv -- cross-var d2-app-scripts start --proxy %DHIS2_PROXY%",
+    "start": "d2-app-scripts start",
+    "start-proxy": "dotenv -- cross-var d2-app-scripts start --proxy %DHIS2_PROXY%",
     "test": "d2-app-scripts test",
     "deploy": "d2-app-scripts deploy"
   },

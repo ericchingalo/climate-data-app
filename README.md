@@ -20,6 +20,25 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
+### `yarn start-proxy`
+
+Runs the app in the development mode with a proxy to avoid the CORS error from the browser.<br />
+
+NOTE: The proxy server will forward requests to the DHIS2 instance running on a specified port. The proxy server is configured to avoid the CORS error that would otherwise occur when making requests to the DHIS2 instance from the browser. <br />
+
+To use the proxy server, you need to specify the port of the DHIS2 instance in the `.env` file as `REACT_APP_DHIS2_BASE_URL`. The content of the `.env` file should follow the `.env.example` <br />
+
+```
+REACT_APP_DHIS2_BASE_URL=http://localhost:8080
+DHIS2_PROXY=<DHIS2_INSTANCE_URL>
+
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
+
 ### `yarn test`
 
 Launches the test runner and runs all available tests found in `/src`.<br />
