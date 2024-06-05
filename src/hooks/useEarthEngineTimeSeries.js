@@ -22,7 +22,7 @@ const useEarthEngineTimeSeries = (dataset, period, geometry) => {
       eePromise.then((ee) =>
         getTimeSeriesData(ee, dataset, period, geometry)
           .then(parseIds)
-          .then(setData)
+          .then(setData),
       );
     }
   }, [eePromise, dataset, period, geometry]);

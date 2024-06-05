@@ -158,7 +158,8 @@ export const getEarthEngineValues = (ee, datasetParams, period, features) =>
       )
         .then((data) => [].concat(...data))
         .then(dataParser)
-        .then(resolve);
+        .then(resolve)
+        .catch(reject);
     }
   });
 
@@ -168,7 +169,11 @@ export const getEarthEngineData = (ee, datasetParams, period, features) => {
     const { bandsParser = (v) => v } = datasetParams;
     return mapLimit(datasetParams.bands, REQUEST_LIMIT, async (band) =>
       getEarthEngineValues(ee, { ...datasetParams, ...band }, period, features),
-    ).then(bandsParser);
+    )
+      .then(bandsParser)
+      .catch((error) => {
+        throw error;
+      });
   } else {
     return getEarthEngineValues(ee, datasetParams, period, features);
   }
